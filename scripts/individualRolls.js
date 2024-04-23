@@ -373,7 +373,7 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 						j = tokenAttackList.length - 1;
 					}
 					if (tokenAttackList.length > 0) {
-						AutoAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), [canvas.tokens.get(targetId)], weaponData);
+						AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, {targets : [canvas.tokens.get(targetId)]});
 					}
 				}
 			}
