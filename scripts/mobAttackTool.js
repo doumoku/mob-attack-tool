@@ -600,7 +600,7 @@ export class MobAttackDialog extends FormApplication {
 					default: "select"
 				}).render(true);
 			});
-			if (selectedMob === initialMobName || selectedMob === "" || game.settings.get(moduleName, "hiddenMobList") === {}) return;
+			if (selectedMob === initialMobName || selectedMob === "" || Object.keys(game.settings.get(moduleName, "hiddenMobList")).length == 0) return;
 
 			html.find(`input[name="mobName"]`)[0].value = selectedMob;
 			await loadMob(event, selectedMob);
