@@ -603,7 +603,7 @@ export async function sendChatMessage(text) {
 export function getAttackBonus(weaponData) {
 	let weaponAbility = weaponData.abilityMod;
 	if (weaponAbility === "" || typeof weaponAbility === "undefined" || weaponAbility == null) {
-		if (!weaponData.type === "spell") {
+		if (weaponData.type != "spell") {
 			weaponAbility = "str";
 		} else {
 			weaponAbility = weaponData.actor.system.attributes.spellcasting;
