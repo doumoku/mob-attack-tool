@@ -144,9 +144,9 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 
 		let targetToken = canvas.tokens.get(targetId);
 		if (targetToken?.actor === null && game.modules.get("multilevel-tokens").active) {
-			let mltFlags = targetToken.data.flags["multilevel-tokens"];
+			let mltFlags = targetToken.flags["multilevel-tokens"];
 			if (mltFlags?.sscene) {
-				targetToken = game.scenes.get(mltFlags.sscene).data.tokens.get(mltFlags.stoken);
+				targetToken = game.scenes.get(mltFlags.sscene).tokens.get(mltFlags.stoken);
 			}
 		}
 
@@ -165,10 +165,10 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 		);
 
 		// prepare data for Midi's On Use Macro feature
-		if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "data.flags.midi-qol.onUseMacroName")) {
+		if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
 			await new Promise(resolve => setTimeout(resolve, 300));
 			const macroData = {
-				actor: weaponData.actor.data,
+				actor: weaponData.actor,
 				actorUuid: weaponData.actor.uuid,
 				tokenId: workflow.tokenId,
 				tokenUuid: workflow.tokenUuid,
@@ -196,7 +196,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 				uuid: workflow.uuid,
 				rollData: weaponData.actor.getRollData(),
 				tag: "OnUse",
-				concentrationData: getProperty(weaponData.actor.data.flags, "midi-qol.concentration-data"),
+				concentrationData: getProperty(weaponData.actor.flags, "midi-qol.concentration-data"),
 				templateId: workflow.templateId,
 				templateUuid: workflow.templateUuid
 			}

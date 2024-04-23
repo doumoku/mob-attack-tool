@@ -93,7 +93,7 @@ export class MobAttackDialog extends FormApplication {
 		this.targetTokens = canvas.tokens.placeables.filter(t => t.isTargeted);
 		for (let i = 0; i < this.targetTokens.length; i++) {
 			if (this.targetTokens[i].actor === null && game.modules.get("multilevel-tokens").active) {
-				let mltFlags = this.targetTokens[i].data.flags["multilevel-tokens"];
+				let mltFlags = this.targetTokens[i].flags["multilevel-tokens"];
 				if (this.targetTokens.filter(t => t.id === mltFlags.stoken).length > 0) {
 					this.targetTokens.splice(i, 1);
 					i--;
@@ -104,9 +104,9 @@ export class MobAttackDialog extends FormApplication {
 		this.numTargets = 0;
 		if (this.targetToken) {
 			if (this.targetToken.actor === null && game.modules.get("multilevel-tokens").active) {
-				let mltFlags = this.targetToken.data.flags["multilevel-tokens"];
+				let mltFlags = this.targetToken.flags["multilevel-tokens"];
 				if (mltFlags?.sscene) {
-					this.targetAC = game.scenes.get(mltFlags.sscene).data.tokens.get(mltFlags.stoken).actor.system.attributes.ac.value;
+					this.targetAC = game.scenes.get(mltFlags.sscene).tokens.get(mltFlags.stoken).actor.system.attributes.ac.value;
 				} else {
 					this.targetAC = canvas.tokens.get(mltFlags.stoken).actor.system.attributes.ac.value;
 				}

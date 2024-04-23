@@ -3,7 +3,7 @@ import { getMultiattackFromActor } from "./multiattack.js";
 
 // This is based in large part on midi-qol's callMacro method
 export async function callMidiMacro(item, midiMacroData) {
-	const macroName = getProperty(item, "data.flags.midi-qol.onUseMacroName");
+	const macroName = getProperty(item, "flags.midi-qol.onUseMacroName");
 	if (!macroName) {
 		console.log(`No On Use Macro found at ${item.name}.`);
 		return;
@@ -38,13 +38,13 @@ export async function callMidiMacro(item, midiMacroData) {
 			const character = game.user.character;
 			const args = [macroData];
 
-			if (!itemMacro?.data?.command) {
+			if (!itemMacro?.command) {
 				console.log(`Mob Attack Tool - Could not find item macro ${macroName}`);
 				return {};
 			}
 			return (new Function(`"use strict";
 				return (async function ({speaker, actor, token, character, item, args}={}) {
-					${itemMacro.data.command}
+					${itemMacro.command}
 					});`))().call(this, { speaker, actor, token, character, item, args });
 		} else {
 			const macroCommand = game.macros.getName(macroName);

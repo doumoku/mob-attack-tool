@@ -123,7 +123,7 @@ export function getMultiattackFromActor(weaponName, actorData, weapons, options)
 		}
 
 		let typeArray = [];
-		let numWeaponsInventory = actorData.items.filter(w => w.data.type === "weapon").length
+		let numWeaponsInventory = actorData.items.filter(w => w.type === "weapon").length
 		if (attackType !== ``) {
 			if (attackType === `melee`) {
 				typeArray = [`simpleM`, `martialM`];

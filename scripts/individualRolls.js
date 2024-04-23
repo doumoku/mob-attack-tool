@@ -177,7 +177,7 @@ export async function rollMobAttackIndividually(data) {
 
 	// Process damage rolls
 	for (let attack of attackData) {
-		await processIndividualDamageRolls(attack.data, attack.weaponData, attack.finalAttackBonus, attack.availableAttacks, attack.successfulAttackRolls, attack.numHitAttacks, attack.numCrits, attack.isVersatile, attack.tokenAttackList, attack.targetId);
+		await processIndividualDamageRolls(attack, attack.weaponData, attack.finalAttackBonus, attack.availableAttacks, attack.successfulAttackRolls, attack.numHitAttacks, attack.numCrits, attack.isVersatile, attack.tokenAttackList, attack.targetId);
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
 
@@ -207,9 +207,9 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 	// Determine target token
 	let targetToken = canvas.tokens.get(targetId);
 	if (targetToken?.actor === null && game.modules.get("multilevel-tokens").active) {
-		let mltFlags = targetToken.data.flags["multilevel-tokens"];
+		let mltFlags = targetToken.flags["multilevel-tokens"];
 		if (mltFlags?.sscene) {
-			targetToken = game.scenes.get(mltFlags.sscene).data.tokens.get(mltFlags.stoken);
+			targetToken = game.scenes.get(mltFlags.sscene).tokens.get(mltFlags.stoken);
 		}
 	}
 
@@ -247,22 +247,22 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 
 			let workflow = new MidiQOL.DamageOnlyWorkflow(
 				weaponData.actor,
-				// (data.targetToken) ? data.targetToken : undefined,
+				// (targetToken) ? targetToken : undefined,
 				targetToken ?? undefined,
 				damageRoll.total,
 				damageTypeLabels[0],
-				// (data.targetToken) ? [data.targetToken] : [],
+				// (targetToken) ? [targetToken] : [],
 				targetToken ? [targetToken] : [],
 				damageRoll,
 				{
 					flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})${(numCrits > 0) ? ` (${game.i18n.localize("MAT.critIncluded")})` : ``}`,
-					itemData: weaponData.data,
+					itemData: weaponData,
 					itemCardId: `new`
 				}
 			);
 
 			// prepare data for Midi's On Use Macro feature
-			if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "data.flags.midi-qol.onUseMacroName")) {
+			if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
 				await new Promise(resolve => setTimeout(resolve, 300));
 				const macroData = {
 					actor: weaponData.actor.data,
@@ -293,7 +293,7 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 					uuid: workflow.uuid,
 					rollData: weaponData.actor.getRollData(),
 					tag: "OnUse",
-					concentrationData: getProperty(weaponData.actor.data.flags, "midi-qol.concentration-data"),
+					concentrationData: getProperty(weaponData.actor.flags, "midi-qol.concentration-data"),
 					templateId: workflow.templateId,
 					templateUuid: workflow.templateUuid
 				}
@@ -378,56 +378,7 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 				}
 			}
 		}
-	} // else if (midi_QOL_Active && !game.settings.get(moduleName,"onUseMacroOnlyOnHits") && game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "data.flags.midi-qol.onUseMacroName")) {
-
-	// 	await new Promise(resolve => setTimeout(resolve, 300));
-	// 	let workflow = new MidiQOL.Workflow(weaponData.actor,weaponData,game.user,[],{});
-	// 	const macroData = {
-	// 		actor: weaponData.actor.data,
-	// 		actorUuid: weaponData.actor.uuid,
-	// 		targets: targetToken ? [targetToken] : [],
-	// 		hitTargets: targetToken ? [targetToken] : [],
-	// 		damageRoll: null,
-	// 		damageRollHTML: null,
-	// 		attackRoll: successfulAttackRolls[0],
-	// 		attackTotal: 0,
-	// 		itemCardId: null,
-	// 		isCritical: false,
-	// 		isFumble: false,
-	// 		spellLevel: 0,
-	// 		powerLevel: 0,
-	// 		damageTotal: 0,
-	// 		damageDetail: [],
-	// 		damageList: [],
-	// 		otherDamageTotal: 0,
-	// 		otherDamageDetail: [],
-	// 		otherDamageList: [{damage: 0, type: ""}],
-	// 		rollOptions: {advantage: data.withAdvantage, disadvantage: data.withDisadvantage, versatile: isVersatile, fastForward: true},
-	// 		advantage: data.withAdvantage,
-	// 		disadvantage: data.withDisadvantage,
-	// 		event: null,
-	// 		uuid: workflow.uuid,
-	// 		rollData: weaponData.actor.getRollData(),
-	// 		tag: "OnUse",
-	// 		concentrationData: getProperty(weaponData.actor.data.flags, "midi-qol.concentration-data"),
-	// 		templateId: workflow.templateId,
-	// 		templateUuid: workflow.templateUuid
-	// 	}
-	// 	let availableTokens = data.selectedTokenIds.filter(t => (canvas.tokens.get(t.tokenId).actor.id === weaponData.actor.id));
-	// 	let j = 0;
-	// 	for (let i = 0; i < availableAttacks; i++) {
-	// 		if (j < availableTokens.length - 1) {
-	// 			j = i;
-	// 		} else {
-	// 			j = availableTokens.length - 1;
-	// 		}
-	// 		if (j < availableTokens.length) {
-	// 			macroData.tokenId = availableTokens[j].tokenId;
-	// 			macroData.tokenUuid = availableTokens[j].tokenUuid;
-	// 			await callMidiMacro(weaponData, macroData);
-	// 		}
-	// 	}
-	// }
+	}
 
 	// Allow DSN 3d dice to be rolled again
 	if (game.user.isGM) await game.settings.set(moduleName, "hiddenDSNactiveFlag", true);
