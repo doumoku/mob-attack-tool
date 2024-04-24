@@ -229,39 +229,39 @@ input[type="number"].numTable {
 }
 
 .mat-dice-tooltip {
-  flex: auto;
-  order: unset;
-  display: block;
-  overflow: hidden;
+	flex: auto;
+	order: unset;
+	display: block;
+	overflow: hidden;
 }
 
 .mat-dice-tooltip .tooltip-part {
-  border-bottom: 1px solid var(--color-border-light-1);
-  padding: 0.125rem 0;
+	border-bottom: 1px solid var(--color-border-light-1);
+	padding: 0.125rem 0;
 }
 
 .mat-dice-tooltip .tooltip-part:last-child {
-  border: none;
-  padding-bottom: 0;
+	border: none;
+	padding-bottom: 0;
 }
 
 .mat-dice-tooltip .dice {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .mat-dice-tooltip .dice .dice-rolls {
-  flex: 1;
-  margin: 5px 0;
+	flex: 1;
+	margin: 5px 0;
 	padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1px;
 }
 
 .mat-dice-tooltip .dice .dice-rolls .roll {
-  float: unset;
-  margin: 0;
+	float: unset;
+	margin: 0;
 	text-align: center;
 	position: relative;
 	min-width: 24px;
@@ -276,21 +276,23 @@ input[type="number"].numTable {
 }
 
 .mat-dice-tooltip .dice-rolls .roll.d20 {
-  background-image: url("../../../icons/svg/d20-grey.svg");
+	background-image: url("../../../icons/svg/d20-grey.svg");
 }
 
 .mat-dice-tooltip .dice-rolls .roll.success,
 .mat-dice-tooltip .dice-rolls .roll.max {
-  color: #18520b;
-  filter: sepia(0.5) hue-rotate(60deg);
+	color: #18520b;
+	filter: sepia(0.5) hue-rotate(60deg);
 }
+
 .mat-dice-tooltip .dice-rolls .roll.failure,
 .mat-dice-tooltip .dice-rolls .roll.min {
-  color: #aa0200;
-  filter: sepia(0.5) hue-rotate(-60deg);
+	color: #aa0200;
+	filter: sepia(0.5) hue-rotate(-60deg);
 }
+
 .mat-dice-tooltip .dice-rolls .roll.discarded,
 .mat-dice-tooltip .dice-rolls .roll.rerolled {
-  color: inherit;
-  filter: sepia(0.5) contrast(0.75) opacity(0.4);
+	color: inherit;
+	filter: sepia(0.5) contrast(0.75) opacity(0.4);
 }

@@ -115,12 +115,10 @@
 						<i class="fas fa-arrow-right"></i>
 					</a>
 				</label>
-				<button type="button" title="{{localize 'MAT.saveMobButtonTitle'}}" name="saveMob"
-					class="saveMobButton">
+				<button type="button" title="{{localize 'MAT.saveMobButtonTitle'}}" name="saveMob" class="saveMobButton">
 					<i class="far fa-save"></i>
 				</button>
-				<button type="button" title="{{localize 'MAT.selectMobButtonTitle'}}" name="selectMob"
-					class="selectMobButton">
+				<button type="button" title="{{localize 'MAT.selectMobButtonTitle'}}" name="selectMob" class="selectMobButton">
 					<i class="fas fa-file-import fa-fw"></i>
 				</button>
 			</div>
@@ -131,9 +129,11 @@
 		<div class="tab active" data-tab="weapons">
 			<p class="hint">{{localize 'MAT.dialogNumSelected'}} <strong>{{numSelected}}</strong>
 				token{{pluralTokensOrNot}}. {{localize 'MAT.totalNumberOfAttacks'}}:
-				<strong>{{this.numTotalAttacks}}</strong>.</p>
+				<strong>{{this.numTotalAttacks}}</strong>.
+			</p>
 			<p class="hint">{{localize 'MAT.averageDamageIfAllAttacksHit'}}:
-				<strong>{{this.totalAverageDamage}}</strong> {{localize 'MAT.pointsOfDamage'}}.</p>
+				<strong>{{this.totalAverageDamage}}</strong> {{localize 'MAT.pointsOfDamage'}}.
+			</p>
 			<div name="mobListOptions">
 				<hr>
 				{{#each this.monsters}}
@@ -192,13 +192,14 @@
 						<strong>{{this.targetAC}}</strong> {{localize 'and'}}{{/if}} {{localize 'MAT.willBeAttacked'}}
 						<strong>{{this.targetTotalNumAttacks}}</strong> {{localize 'MAT.times'}}.<br>{{localize
 						'MAT.averageDamageIfAllAttacksHit'}}: <strong>{{this.targetTotalAverageDamage}}</strong>
-						{{localize 'MAT.pointsOfDamage'}}.</p>
+						{{localize 'MAT.pointsOfDamage'}}.
+					</p>
 					<div class="mat-attacks-on-target-box">
 						{{#each this.weapons}}
 						<label class="mat-label target-attack-box">
 							<img class="mat-weapon-icon mat-weapon " src="{{this.weaponImg}}"
-								title="Open {{this.weaponNameImg}} ({{this.weaponActorName}}) sheet" width="30"
-								height="30" data-item-id="{{this.weaponId}}">
+								title="Open {{this.weaponNameImg}} ({{this.weaponActorName}}) sheet" width="30" height="30"
+								data-item-id="{{this.weaponId}}">
 						</label>
 						{{/each}}
 					</div>

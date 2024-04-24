@@ -249,7 +249,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 					j = tokenAttackList.length - 1;
 				}
 				if (tokenAttackList.length > 0) {
-					AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, {targets : [canvas.tokens.get(targetId)]});
+					AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, { targets: [canvas.tokens.get(targetId)] });
 				}
 			}
 		}
