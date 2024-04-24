@@ -951,7 +951,7 @@ export function MobAttacks() {
 			}
 			for (let combatant of groups[i]) {
 				actorList.push(combatant?.actor);
-				selectedTokenIds.push(combatant.data?.tokenId);
+				selectedTokenIds.push(combatant?.tokenId);
 			}
 			mobList = await saveMob(mobNames[i], actorList, selectedTokenIds, numSelected, "ctg");
 		}

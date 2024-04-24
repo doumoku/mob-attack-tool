@@ -265,7 +265,7 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 			if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
 				await new Promise(resolve => setTimeout(resolve, 300));
 				const macroData = {
-					actor: weaponData.actor.data,
+					actor: weaponData.actor,
 					actorUuid: weaponData.actor.uuid,
 					tokenId: workflow.tokenId,
 					tokenUuid: workflow.tokenUuid,

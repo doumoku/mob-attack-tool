@@ -113,7 +113,7 @@ export async function rollMobAttack(data) {
 		}
 
 		for (let attack of attackData) {
-			await processMobRulesDamageRolls(attack.data, attack.weaponData, attack.numHitAttacks, attack.isVersatile, attack.tokenAttackList, attack.targetId);
+			await processMobRulesDamageRolls(attack, attack.weaponData, attack.numHitAttacks, attack.isVersatile, attack.tokenAttackList, attack.targetId);
 			await new Promise(resolve => setTimeout(resolve, 500));
 		}
 
@@ -159,7 +159,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 			damageRoll,
 			{
 				flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})`,
-				itemData: weaponData.data,
+				itemData: weaponData,
 				itemCardId: `new`
 			}
 		);
