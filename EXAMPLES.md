@@ -71,20 +71,6 @@ Likewise in the image below you can see what it looks like when using "Individua
 
 If the previous setting is set to "Individual Attack Rolls", then Mob Attack Tool will only show these attack rolls if this setting is enabled. To save some chat log space, only attack rolls that would hit the target are shown. And even if this setting is disabled, then at least a single attack roll matching the target's AC is shown when using Better Rolls for 5e. This is currently necessary in order to trigger Midi-QOL's damage automation.
 
-When using Better Rolls for 5e, the attack rolls have strange dice formula such as "0d0 +  17". This is also part of a workaround. Natural 20s and natural 1s are detected as usual. Support for crit thresholds lower than 20 is an upcoming feature.
-
-Below you can see how individual attack rolls are displayed when this setting is enabled with both Better Rolls for 5e and Midi-QOL active.
-
-<details>
-  <summary>Show image</summary>
-
-  <img width="1185" alt="screenshot_mat_8_show_individual_rolls_betterrolls_midi" src="https://user-images.githubusercontent.com/17188192/113694373-f5baf880-96cf-11eb-98a1-e946776e0be3.png">
-</details>
-
-## Without Better Rolls for 5e
-
-I'm aware that Better Rolls for 5e and Midi-QOL don't always work perfectly together, and thus there are people who only use one of either. If only Better Rolls for 5e is active, then the results look identical minus the "HP Updated" chat message.
-
 If only Midi-QOL is active and you're using the "Individual Attack Rolls" setting, then a mob attack would look like what is shown below.
 
 <details>
@@ -95,9 +81,9 @@ If only Midi-QOL is active and you're using the "Individual Attack Rolls" settin
 
 In the image above you can see that both attack rolls were critical hits, but all damage formulas were condensed into a single formula. This saves quite a lot of chat log space. Unfortunately, as of now Mob Attack Tool does not support showing individual attack rolls when only Midi-QOL is active. I'll try to include it in a later release.
 
-## Without Better Rolls for 5e or Midi-QOL
+## Without Midi-QOL
 
-Of course, you can also use Mob Attack Tool without either of these modules. If "Show individual attack rolls" is disabled, then a mob attack that uses "Individual Attack Rolls" would appear as shown in the image below.
+Of course, you can also use Mob Attack Tool without MidiQOL. If "Show individual attack rolls" is disabled, then a mob attack that uses "Individual Attack Rolls" would appear as shown in the image below.
 
 <details>
   <summary>Show image</summary>
