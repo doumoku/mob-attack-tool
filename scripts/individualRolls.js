@@ -373,7 +373,13 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 						j = tokenAttackList.length - 1;
 					}
 					if (tokenAttackList.length > 0) {
-						AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, { targets: [canvas.tokens.get(targetId)] });
+						const target = canvas.tokens.get(targetId);
+						let options = {};
+						if (typeof target !== "undefined"){
+							// don't try to pass target data if a target hasn't been selected
+							options = {targets: [target]};
+						}
+						AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, options);
 					}
 				}
 			}
