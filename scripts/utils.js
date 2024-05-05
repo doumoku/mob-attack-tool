@@ -80,7 +80,7 @@ export async function getTargetData(monsters) {
 		}
 	}
 	let weaponsOnTarget = {};
-	for (let [monsterID, monsterData] of Object.entries(duplicate(monsters))) {
+	for (let [monsterID, monsterData] of Object.entries(foundry.utils.duplicate(monsters))) {
 		Object.assign(weaponsOnTarget, monsterData.weapons);
 		for (let i = 0; i < monsterData.amount - 1; i++) {
 			for (let weaponID of Object.keys(monsterData.weapons)) {
@@ -97,7 +97,7 @@ export async function getTargetData(monsters) {
 			delete weaponsOnTarget[weaponID];
 		} else {
 			for (let j = 0; j < weaponData.numAttack; j++) {
-				let singleWeaponData = duplicate(weaponData);
+				let singleWeaponData = foundry.utils.duplicate(weaponData);
 				singleWeaponData.numAttack = 1;
 				weaponsOnTargetArray.push(singleWeaponData);
 			}
