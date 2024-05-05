@@ -1,6 +1,8 @@
 ![Mob Attack Tool Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdaft-develop%2Fmob-attack-tool%2Fmaster%2Fmodule.json&label=Module%20Version&query=$.version&colorB=blue)
 ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdaft-develop%2Fmob-attack-tool%2Fmaster%2Fmodule.json&label=Foundry%20Version&query=$.compatibility.verified&colorB=orange) ![Latest Release Download Count](https://img.shields.io/github/downloads/daft-develop/mob-attack-tool/latest/module.zip)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S7XR3FZ)
+
 # Mob Attack Tool
 
 This is a Foundry VTT module that streamlines mob attacks in the dnd5e system. It focuses on helping the GM and players quickly resolve multiple attack and damage rolls from groups of monsters (mobs), summons, and/or creatures with the multiattack action. This module supports use of the [Dice so Nice!](https://gitlab.com/riccisi/foundryvtt-dice-so-nice/-/tree/master), [Midi-QOL](https://gitlab.com/tposney/midi-qol/-/tree/master), and [Automated Animations](https://github.com/otigon/automated-jb2a-animations) modules.
