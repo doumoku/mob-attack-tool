@@ -4,13 +4,10 @@
   "description": "A module for dnd5e that adds support for Mob Attacks.",
   "authors": [
     {
-      "name": "Stendarpaval (Lupusmalus)"
-    },
-    {
       "name": "Daft-Develop"
     },
     {
-      "name": "4cer"
+      "name": "Stendarpaval (Lupusmalus)"
     }
   ],
   "languages": [
