@@ -245,7 +245,7 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 			// Roll Dice so Nice dice
 			if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) game.dice3d.showForRoll(damageRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
 
-			let workflow = new MidiQOL.DamageOnlyWorkflow(
+			let workflow = await new MidiQOL.DamageOnlyWorkflow(
 				weaponData.actor,
 				// (targetToken) ? targetToken : undefined,
 				targetToken ?? undefined,

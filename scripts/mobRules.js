@@ -150,7 +150,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 			}
 		}
 
-		let workflow = new MidiQOL.DamageOnlyWorkflow(
+		let workflow = await new MidiQOL.DamageOnlyWorkflow(
 			weaponData.actor,
 			targetToken ?? undefined,
 			damageRoll.total,
