@@ -4,13 +4,10 @@
   "description": "A module for dnd5e that adds support for Mob Attacks.",
   "authors": [
     {
-      "name": "Stendarpaval (Lupusmalus)"
-    },
-    {
       "name": "Daft-Develop"
     },
     {
-      "name": "4cer"
+      "name": "Stendarpaval (Lupusmalus)"
     }
   ],
   "languages": [
@@ -28,11 +25,10 @@
     }
   ],
   "url": "https://github.com/daft-develop/mob-attack-tool",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "compatibility": {
     "minimum": "10",
-    "verified": "11",
-    "maximum": "11"
+    "verified": "11"
   },
   "relationships": {
     "systems": [

@@ -113,7 +113,7 @@ export async function rollMobAttack(data) {
 		}
 
 		for (let attack of attackData) {
-			await processMobRulesDamageRolls(attack.data, attack.weaponData, attack.numHitAttacks, attack.isVersatile, attack.tokenAttackList, attack.targetId);
+			await processMobRulesDamageRolls(attack, attack.weaponData, attack.numHitAttacks, attack.isVersatile, attack.tokenAttackList, attack.targetId);
 			await new Promise(resolve => setTimeout(resolve, 500));
 		}
 
@@ -144,13 +144,13 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 
 		let targetToken = canvas.tokens.get(targetId);
 		if (targetToken?.actor === null && game.modules.get("multilevel-tokens").active) {
-			let mltFlags = targetToken.data.flags["multilevel-tokens"];
+			let mltFlags = targetToken.flags["multilevel-tokens"];
 			if (mltFlags?.sscene) {
-				targetToken = game.scenes.get(mltFlags.sscene).data.tokens.get(mltFlags.stoken);
+				targetToken = game.scenes.get(mltFlags.sscene).tokens.get(mltFlags.stoken);
 			}
 		}
 
-		let workflow = new MidiQOL.DamageOnlyWorkflow(
+		let workflow = await new MidiQOL.DamageOnlyWorkflow(
 			weaponData.actor,
 			targetToken ?? undefined,
 			damageRoll.total,
@@ -159,16 +159,16 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 			damageRoll,
 			{
 				flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})`,
-				itemData: weaponData.data,
+				itemData: weaponData,
 				itemCardId: `new`
 			}
 		);
 
 		// prepare data for Midi's On Use Macro feature
-		if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "data.flags.midi-qol.onUseMacroName")) {
+		if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
 			await new Promise(resolve => setTimeout(resolve, 300));
 			const macroData = {
-				actor: weaponData.actor.data,
+				actor: weaponData.actor,
 				actorUuid: weaponData.actor.uuid,
 				tokenId: workflow.tokenId,
 				tokenUuid: workflow.tokenUuid,
@@ -196,7 +196,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 				uuid: workflow.uuid,
 				rollData: weaponData.actor.getRollData(),
 				tag: "OnUse",
-				concentrationData: getProperty(weaponData.actor.data.flags, "midi-qol.concentration-data"),
+				concentrationData: getProperty(weaponData.actor.flags, "midi-qol.concentration-data"),
 				templateId: workflow.templateId,
 				templateUuid: workflow.templateUuid
 			}
@@ -249,7 +249,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 					j = tokenAttackList.length - 1;
 				}
 				if (tokenAttackList.length > 0) {
-					AutoAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), [canvas.tokens.get(targetId)], weaponData);
+					AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, { targets: [canvas.tokens.get(targetId)] });
 				}
 			}
 		}

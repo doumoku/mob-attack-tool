@@ -93,12 +93,12 @@ Hooks.on("updateCombat", async (combat, changed) => {
 	if (!("turn" in changed)) return;
 	if (!game.settings.get(moduleName, "autoSelectMobCombatants")) return;
 	let thisCombat = game.combats.get(combat.id);
-	if (thisCombat.data.combatants.length === 0) return;
+	if (thisCombat.combatants.length === 0) return;
 	if (!game.user.isGM && game.combat.combatant.players.filter(p => p.id === game.user.id).length === 0) return;
 
 	const mobList = game.settings.get("mob-attack-tool", "hiddenMobList");
 	const nextTurn = combat.turns[changed.turn];
-	const nextTokenId = nextTurn.data.tokenId;
+	const nextTokenId = nextTurn.tokenId;
 	let nextMobName = "";
 	for (let mobName of Object.keys(mobList)) {
 		if (mobList[mobName].selectedTokenIds.includes(nextTokenId) && mobList[mobName].userId === game.user.id) {

@@ -305,7 +305,7 @@ export function initSettings() {
 
 class RollSettingsMenu extends FormApplication {
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			title: "Mob Attack Tool Settings",
 			id: "mob-attack-tool-roll-settings",
 			template: "modules/mob-attack-tool/templates/mat-roll-settings-menu.html",

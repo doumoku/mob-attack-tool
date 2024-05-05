@@ -3,7 +3,7 @@ import { getMultiattackFromActor } from "./multiattack.js";
 
 // This is based in large part on midi-qol's callMacro method
 export async function callMidiMacro(item, midiMacroData) {
-	const macroName = getProperty(item, "data.flags.midi-qol.onUseMacroName");
+	const macroName = getProperty(item, "flags.midi-qol.onUseMacroName");
 	if (!macroName) {
 		console.log(`No On Use Macro found at ${item.name}.`);
 		return;
@@ -38,13 +38,13 @@ export async function callMidiMacro(item, midiMacroData) {
 			const character = game.user.character;
 			const args = [macroData];
 
-			if (!itemMacro?.data?.command) {
+			if (!itemMacro?.command) {
 				console.log(`Mob Attack Tool - Could not find item macro ${macroName}`);
 				return {};
 			}
 			return (new Function(`"use strict";
 				return (async function ({speaker, actor, token, character, item, args}={}) {
-					${itemMacro.data.command}
+					${itemMacro.command}
 					});`))().call(this, { speaker, actor, token, character, item, args });
 		} else {
 			const macroCommand = game.macros.getName(macroName);
@@ -80,7 +80,7 @@ export async function getTargetData(monsters) {
 		}
 	}
 	let weaponsOnTarget = {};
-	for (let [monsterID, monsterData] of Object.entries(duplicate(monsters))) {
+	for (let [monsterID, monsterData] of Object.entries(foundry.utils.duplicate(monsters))) {
 		Object.assign(weaponsOnTarget, monsterData.weapons);
 		for (let i = 0; i < monsterData.amount - 1; i++) {
 			for (let weaponID of Object.keys(monsterData.weapons)) {
@@ -97,7 +97,7 @@ export async function getTargetData(monsters) {
 			delete weaponsOnTarget[weaponID];
 		} else {
 			for (let j = 0; j < weaponData.numAttack; j++) {
-				let singleWeaponData = duplicate(weaponData);
+				let singleWeaponData = foundry.utils.duplicate(weaponData);
 				singleWeaponData.numAttack = 1;
 				weaponsOnTargetArray.push(singleWeaponData);
 			}
@@ -603,7 +603,7 @@ export async function sendChatMessage(text) {
 export function getAttackBonus(weaponData) {
 	let weaponAbility = weaponData.abilityMod;
 	if (weaponAbility === "" || typeof weaponAbility === "undefined" || weaponAbility == null) {
-		if (!weaponData.type === "spell") {
+		if (weaponData.type != "spell") {
 			weaponAbility = "str";
 		} else {
 			weaponAbility = weaponData.actor.system.attributes.spellcasting;
