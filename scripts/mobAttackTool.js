@@ -73,7 +73,7 @@ export class MobAttackDialog extends FormApplication {
 	}
 
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			title: "Mob Attack Tool",
 			id: "mob-attack-tool-dialog",
 			template: "modules/mob-attack-tool/templates/mat-dialog.html",
