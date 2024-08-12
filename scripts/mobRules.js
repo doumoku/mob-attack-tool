@@ -220,7 +220,7 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 		if (showDamageRolls) {
 			await new Promise(resolve => setTimeout(resolve, 100));
 			for (let i = 0; i < numHitAttacks; i++) {
-				await weaponData.rollDamage({ "critical": false, "event": { "shiftKey": true } });
+				await weaponData.rollDamage({ "critical": false, "options": { "fastForward": true } });
 				await new Promise(resolve => setTimeout(resolve, 300));
 			}
 		} else {

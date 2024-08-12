@@ -319,10 +319,10 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 					await new Promise(resolve => setTimeout(resolve, 300));
 					let damageOptions = {};
 					if (successfulAttackRolls[i].total - finalAttackBonus >= critThreshold && numCrits > 0) {
-						damageOptions = { "critical": true, "event": { "altKey": true } };
+						damageOptions = { "critical": true, "options": { "fastForward": true } };
 						numCrits--
 					} else {
-						damageOptions = { "critical": false, "event": { "shiftKey": true } };
+						damageOptions = { "critical": false, "options": { "fastForward": true } };
 					}
 					await weaponData.rollDamage(damageOptions);
 				}
