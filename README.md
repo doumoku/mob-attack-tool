@@ -42,8 +42,33 @@ Instead of rolling for each mob, a lookup table can be used instead which will d
 
 ## Limitations
 
-- Currently damage is just rolled without saves or condition checks. Mobs of ghouls biting will not trigger any paralysing effects
+- Currently damage is just rolled without saves or condition checks. Mobs of ghouls claws will not trigger any paralysing effects
 - Older versions of this module worked with grouped initiative modules, but isn't actively supported in newer release. It might still work but hasn't been tested recently
+
+## Using with MidiQOL
+
+This module is compatible and plays well with MiqiQOL with the following considerations:
+
+- This module currently only passes off damage workflow to MidiQOL. Consequently, half damage on save, macros, and automatically conditions are not (yet) supported
+- If damage rolls are grouped, a single combined value of damage is applied to the target, which will result in much higher concentration DC values than intended
+- If used in combination with Dice So Nice, the number of quickly generated messagess can throw off MidiQOL's detection for triggering reactions (e.g., concentration saves)
+
+I recommend the following MAT settings when using MidiQOL:
+
+- In Midi-QOL->
+  - Fast Forward Ability rolls (to perform concentration checks automatically)
+  - Workflow: Auto apply damage (to trigger con checks)
+- In MAT->
+  - Individual Attack Rolls (instead of mob rules) to separate out damage
+  - Advanced settings ->
+    - Generate individual damage rolls (ensure MidiQOL process each damage separately)
+    - Enable Midi-QOL
+
+If you aren't automatically applying damage with MidiQOL or using it to roll concentration checks, these recommendations aren't necessary.
+
+Any manual delay during the attack/damage workflow (GM or users manually applying a save and/or reaction) may result in MidiQOL missing an automatic save check, but otherwise should still continue to apply damage correctly.
+
+Note: to allow MiqiQOL time to process damage, the damage rolls are animated (with Dice So Nice) one at a time under this configuration.
 
 ## New
 
@@ -80,7 +105,7 @@ For more elaborate examples and screenshots, please head over to [EXAMPLES.md](E
 
 ## Bugs / Feature Requests
 
-Have an issue or think the module could use a new feature? Create a new [Github issue](https://github.com/daft-develop/mob-attack-tool/issues)!
+Have an issue or think the module could use a new feature? Create a new [Github issue](https://github.com/daft-develop/mob-attack-tool/issues)! Pull requests welcome, but please open an issue first to let others and myself know what you're working on.
 
 ## Translations
 
