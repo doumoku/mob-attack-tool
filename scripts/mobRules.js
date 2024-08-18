@@ -140,7 +140,9 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 		let damageRoll = new Roll(diceFormula, { mod: weaponData.actor.system.abilities[weaponData.abilityMod].mod });
 		await damageRoll.alter(numHitAttacks, 0, { multiplyNumeric: true }).roll();
 
-		if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) game.dice3d.showForRoll(damageRoll);
+		if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) {
+			game.dice3d.showForRoll(damageRoll);
+		}
 
 		let targetToken = canvas.tokens.get(targetId);
 		if (targetToken?.actor === null && game.modules.get("multilevel-tokens").active) {
@@ -213,9 +215,8 @@ export async function processMobRulesDamageRolls(data, weaponData, numHitAttacks
 				await callMidiMacro(weaponData, macroData);
 			}
 		}
-		Hooks.call("midi-qol.DamageRollComplete", workflow);
 
-		// midi-qol not active
+	// midi-qol not active
 	} else {
 		if (showDamageRolls) {
 			await new Promise(resolve => setTimeout(resolve, 100));

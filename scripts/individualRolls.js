@@ -68,7 +68,10 @@ export async function rollMobAttackIndividually(data) {
 				// Check settings for rolling 3d dice from Dice So Nice
 				if (game.user.getFlag(moduleName, "showIndividualAttackRolls") ?? game.settings.get(moduleName, "showIndividualAttackRolls")) {
 					if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) {
-						if (!game.settings.get(moduleName, "hideDSNAttackRoll") || !game.user.isGM) game.dice3d.showForRoll(attackRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
+						if (!game.settings.get(moduleName, "hideDSNAttackRoll") || !game.user.isGM) {
+							// don't await on the attack roll animation, otherwise it won't combine and it takess a while
+							game.dice3d.showForRoll(attackRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
+						}
 					}
 				}
 
@@ -216,103 +219,159 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 	if (numHitAttacks != 0) {
 		// midi active
 		if (midi_QOL_Active) {
-			await new Promise(resolve => setTimeout(resolve, 300));
-			let [diceFormulas, damageTypes, damageTypeLabels] = getDamageFormulaAndType(weaponData, isVersatile);
-
-			let diceFormula = diceFormulas.join(" + ");
-			let damageType = damageTypes.join(", ");
-			let damageRoll = new Roll(diceFormula, { mod: weaponData.actor.system.abilities[weaponData.abilityMod].mod });
-
-			// Add critical damage dice
-			let critDice = [], critDie;
-			let damageRollDiceTerms = damageRoll.terms.filter(t => t.number > 0 && t.faces > 0);
-			for (let term of damageRollDiceTerms) {
-				critDie = new Die({ number: term.number, faces: term.faces });
-				critDice.push(critDie);
-			}
-			await damageRoll.alter(numHitAttacks, 0, { multiplyNumeric: true });
-			if (numCrits > 0) {
-				for (let i = 0; i < critDice.length; i++) {
-					await critDice[i].alter(numCrits, 0, { multiplyNumeric: false });
-					if (damageRollDiceTerms[i].faces === critDice[i].faces) {
-						damageRollDiceTerms[i].number += critDice[i].number;
-					}
-					damageRoll._formula = damageRoll.formula;
-				}
-			}
-			damageRoll = await damageRoll.evaluate();
-
-			// Roll Dice so Nice dice
-			if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) game.dice3d.showForRoll(damageRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
-
-			let workflow = await new MidiQOL.DamageOnlyWorkflow(
-				weaponData.actor,
-				// (targetToken) ? targetToken : undefined,
-				targetToken ?? undefined,
-				damageRoll.total,
-				damageTypeLabels[0],
-				// (targetToken) ? [targetToken] : [],
-				targetToken ? [targetToken] : [],
-				damageRoll,
-				{
-					flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})${(numCrits > 0) ? ` (${game.i18n.localize("MAT.critIncluded")})` : ``}`,
-					itemData: weaponData,
-					itemCardId: `new`
-				}
-			);
-
-			// prepare data for Midi's On Use Macro feature
-			if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
-				await new Promise(resolve => setTimeout(resolve, 300));
-				const macroData = {
-					actor: weaponData.actor,
-					actorUuid: weaponData.actor.uuid,
-					tokenId: workflow.tokenId,
-					tokenUuid: workflow.tokenUuid,
-					targets: targetToken ? [targetToken] : [],
-					hitTargets: targetToken ? [targetToken] : [],
-					damageRoll: damageRoll,
-					damageRollHTML: workflow.damageRollHTML,
-					attackRoll: successfulAttackRolls[0],
-					attackTotal: successfulAttackRolls[0].total,
-					itemCardId: (game.settings.get(moduleName, "dontSendItemCardId")) ? null : workflow.itemCardId,
-					isCritical: (numCrits > 0),
-					isFumble: false,
-					spellLevel: 0,
-					powerLevel: 0,
-					damageTotal: damageRoll.total,
-					damageDetail: workflow.damageDetail,
-					damageList: workflow.damageList,
-					otherDamageTotal: 0,
-					otherDamageDetail: workflow.otherDamageDetail,
-					otherDamageList: [{ damage: damageRoll.total, type: damageTypes[0] }],
-					rollOptions: { advantage: data.withAdvantage, disadvantage: data.withDisadvantage, versatile: isVersatile, fastForward: true },
-					advantage: data.withAdvantage,
-					disadvantage: data.withDisadvantage,
-					event: null,
-					uuid: workflow.uuid,
-					rollData: weaponData.actor.getRollData(),
-					tag: "OnUse",
-					concentrationData: getProperty(weaponData.actor.flags, "midi-qol.concentration-data"),
-					templateId: workflow.templateId,
-					templateUuid: workflow.templateUuid
-				}
-
-				let j = 0;
+			if (showDamageRolls) {
 				for (let i = 0; i < numHitAttacks; i++) {
-					if (j < tokenAttackList.length) {
-						j = i;
-					} else {
-						j = tokenAttackList.length - 1;
+					let [diceFormulas, damageTypes, damageTypeLabels] = getDamageFormulaAndType(weaponData, isVersatile);
+
+					let diceFormula = diceFormulas.join(" + ");
+					let damageType = damageTypes.join(", ");
+					let damageRoll = new Roll(diceFormula, { mod: weaponData.actor.system.abilities[weaponData.abilityMod].mod });
+
+					if(numCrits > 0) {
+						// Add critical damage dice on each successful attack, up to the number of crits
+						let critDice = [], critDie;
+						let damageRollDiceTerms = damageRoll.terms.filter(t => t.number > 0 && t.faces > 0);
+						for (let term of damageRollDiceTerms) {
+							critDie = new Die({ number: term.number, faces: term.faces });
+							critDice.push(critDie);
+						}
+						for (let i = 0; i < critDice.length; i++) {
+							if (damageRollDiceTerms[i].faces === critDice[i].faces) {
+								damageRollDiceTerms[i].number += critDice[i].number;
+							}
+							damageRoll._formula = damageRoll.formula;
+						}
+						numCrits--;
 					}
-					macroData.tokenId = tokenAttackList[j].tokenId;
-					macroData.tokenUuid = tokenAttackList[j].tokenUuid;
-					await callMidiMacro(weaponData, macroData);
+					damageRoll = await damageRoll.evaluate();
+
+					// Roll Dice so Nice dice
+					if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) {
+						await game.dice3d.showForRoll(damageRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
+					}
+
+					let workflow = await new MidiQOL.DamageOnlyWorkflow(
+						weaponData.actor,
+						// (targetToken) ? targetToken : undefined,
+						targetToken ?? undefined,
+						damageRoll.total,
+						damageTypeLabels[0],
+						// (targetToken) ? [targetToken] : [],
+						targetToken ? [targetToken] : [],
+						damageRoll,
+						{
+							flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})${(numCrits > 0) ? ` (${game.i18n.localize("MAT.critIncluded")})` : ``}`,
+							itemData: weaponData,
+							itemCardId: `new`
+						}
+					);
+					// after issuing the workflow, wait until it signals complete, or 4 seconds has passed, whichever is first
+					let waiting = 4000;
+					Hooks.once("midi-qol.RollComplete", () => {waiting = 0;});
+					while(waiting>0) {
+						await new Promise(resolve => setTimeout(resolve, 100));
+						waiting -= 100;
+					}
+				}
+			} else {
+				await new Promise(resolve => setTimeout(resolve, 300));
+				let [diceFormulas, damageTypes, damageTypeLabels] = getDamageFormulaAndType(weaponData, isVersatile);
+
+				let diceFormula = diceFormulas.join(" + ");
+				let damageType = damageTypes.join(", ");
+				let damageRoll = new Roll(diceFormula, { mod: weaponData.actor.system.abilities[weaponData.abilityMod].mod });
+
+				// Add critical damage dice
+				let critDice = [], critDie;
+				let damageRollDiceTerms = damageRoll.terms.filter(t => t.number > 0 && t.faces > 0);
+				for (let term of damageRollDiceTerms) {
+					critDie = new Die({ number: term.number, faces: term.faces });
+					critDice.push(critDie);
+				}
+				await damageRoll.alter(numHitAttacks, 0, { multiplyNumeric: true });
+				if (numCrits > 0) {
+					for (let i = 0; i < critDice.length; i++) {
+						await critDice[i].alter(numCrits, 0, { multiplyNumeric: false });
+						if (damageRollDiceTerms[i].faces === critDice[i].faces) {
+							damageRollDiceTerms[i].number += critDice[i].number;
+						}
+						damageRoll._formula = damageRoll.formula;
+					}
+				}
+				damageRoll = await damageRoll.evaluate();
+
+				// Roll Dice so Nice dice
+				if (game.modules.get("dice-so-nice")?.active && game.settings.get(moduleName, "enableDiceSoNice")) {
+					await game.dice3d.showForRoll(damageRoll, game.user, game.settings.get("core", "rollMode") === 'publicroll' || game.settings.get("core", "rollMode") === 'roll');
+				}
+
+				let workflow = await new MidiQOL.DamageOnlyWorkflow(
+					weaponData.actor,
+					// (targetToken) ? targetToken : undefined,
+					targetToken ?? undefined,
+					damageRoll.total,
+					damageTypeLabels[0],
+					// (targetToken) ? [targetToken] : [],
+					targetToken ? [targetToken] : [],
+					damageRoll,
+					{
+						flavor: `${weaponData.name} - ${game.i18n.localize("Damage Roll")} (${damageType})${(numCrits > 0) ? ` (${game.i18n.localize("MAT.critIncluded")})` : ``}`,
+						itemData: weaponData,
+						itemCardId: `new`
+					}
+				);
+
+				// prepare data for Midi's On Use Macro feature
+				if (game.settings.get(moduleName, "enableMidiOnUseMacro") && getProperty(weaponData, "flags.midi-qol.onUseMacroName")) {
+					await new Promise(resolve => setTimeout(resolve, 300));
+					const macroData = {
+						actor: weaponData.actor,
+						actorUuid: weaponData.actor.uuid,
+						tokenId: workflow.tokenId,
+						tokenUuid: workflow.tokenUuid,
+						targets: targetToken ? [targetToken] : [],
+						hitTargets: targetToken ? [targetToken] : [],
+						damageRoll: damageRoll,
+						damageRollHTML: workflow.damageRollHTML,
+						attackRoll: successfulAttackRolls[0],
+						attackTotal: successfulAttackRolls[0].total,
+						itemCardId: (game.settings.get(moduleName, "dontSendItemCardId")) ? null : workflow.itemCardId,
+						isCritical: (numCrits > 0),
+						isFumble: false,
+						spellLevel: 0,
+						powerLevel: 0,
+						damageTotal: damageRoll.total,
+						damageDetail: workflow.damageDetail,
+						damageList: workflow.damageList,
+						otherDamageTotal: 0,
+						otherDamageDetail: workflow.otherDamageDetail,
+						otherDamageList: [{ damage: damageRoll.total, type: damageTypes[0] }],
+						rollOptions: { advantage: data.withAdvantage, disadvantage: data.withDisadvantage, versatile: isVersatile, fastForward: true },
+						advantage: data.withAdvantage,
+						disadvantage: data.withDisadvantage,
+						event: null,
+						uuid: workflow.uuid,
+						rollData: weaponData.actor.getRollData(),
+						tag: "OnUse",
+						concentrationData: getProperty(weaponData.actor.flags, "midi-qol.concentration-data"),
+						templateId: workflow.templateId,
+						templateUuid: workflow.templateUuid
+					}
+
+					let j = 0;
+					for (let i = 0; i < numHitAttacks; i++) {
+						if (j < tokenAttackList.length) {
+							j = i;
+						} else {
+							j = tokenAttackList.length - 1;
+						}
+						macroData.tokenId = tokenAttackList[j].tokenId;
+						macroData.tokenUuid = tokenAttackList[j].tokenUuid;
+						await callMidiMacro(weaponData, macroData);
+					}
 				}
 			}
-			Hooks.call("midi-qol.DamageRollComplete", workflow);
-
-			// Midi-QOL not active
+		// Midi-QOL not active
 		} else {
 			if (showDamageRolls) {
 				for (let i = 0; i < numHitAttacks; i++) {
@@ -375,9 +434,9 @@ export async function processIndividualDamageRolls(data, weaponData, finalAttack
 					if (tokenAttackList.length > 0) {
 						const target = canvas.tokens.get(targetId);
 						let options = {};
-						if (typeof target !== "undefined"){
+						if (typeof target !== "undefined") {
 							// don't try to pass target data if a target hasn't been selected
-							options = {targets: [target]};
+							options = { targets: [target] };
 						}
 						AutomatedAnimations.playAnimation(canvas.tokens.get(tokenAttackList[j].tokenId), weaponData, options);
 					}
