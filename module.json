@@ -22,6 +22,12 @@
       "name": "Korean",
       "path": "lang/ko.json",
       "flags": {}
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json",
+      "flags": {}
     }
   ],
   "url": "https://github.com/daft-develop/mob-attack-tool",
