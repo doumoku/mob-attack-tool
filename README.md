@@ -113,6 +113,7 @@ Mob Attack Tool currently supports these languages:
 
 * English
 * Korean (translation provided by KLO (discord : KLO#1490). Thanks, KLO!)
+* Brazilian Portuguese (translation provided by Kharmans. Thank you!)
 
 ## Inspirations
 
